@@ -55,7 +55,6 @@ async def addPlayer(battleTag):
 		return False
 	playerStats = processStats(playerStats)
 	players.append(playerStats)
-	print(players)
 	return True
 
 async def getLeaderboard(order):
@@ -71,11 +70,11 @@ async def addTestPlayers():
 	await addPlayer('Lucario-1888')
 	await addPlayer('Lunar-1153')
 	await addPlayer('Oblivion-1572')
-	await addPlayer('Demetri-1640')
-	await addPlayer('NerdyPanda-1923')
 	await addPlayer('Michelangelo-11865')
-	await addPlayer('Captain-12480')
-	await addPlayer('Spyceh-1223')
+	await addPlayer('Demetri-1640')
+	# await addPlayer('NerdyPanda-1923')
+	# await addPlayer('Captain-12480')
+	# await addPlayer('Spyceh-1223')
 
 
 
