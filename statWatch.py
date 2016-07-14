@@ -1,6 +1,7 @@
 import discord
 import asyncio
 import stats
+import myPwd
 
 client = discord.Client()
 
@@ -36,4 +37,4 @@ async def on_message(message):
         response = await stats.getLeaderboard()
         await client.send_message(message.channel, response)
 
-client.run('azablan.dev@gmail.com', password)
+client.run('azablan.dev@gmail.com', myPwd.password())
