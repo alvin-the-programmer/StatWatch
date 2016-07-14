@@ -19,9 +19,12 @@ def processStats(stats):
 	avgStats = stats['average_stats']
 	gameStats = stats['game_stats']
 	newStats = {}
-	newStats['Rank'] = overallStats['comprank']
+	if overallStats['comprank'] is None:
+		newStats['Rank'] = 0
+	else:
+		newStats['Rank'] = overallStats['comprank']
 	newStats['Games'] = overallStats['games']
-	newStats['Level'] = overallStats['level']
+	newStats['Level'] = overallStats['level'] 
 	newStats['Prestige'] = overallStats['prestige']
 	winRate = round(overallStats['wins'] / (overallStats['wins'] + overallStats['losses']), 3) * 100
 	newStats['Win-Rate'] = round(winRate, 1)
