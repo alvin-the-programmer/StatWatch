@@ -2,14 +2,15 @@ import urllib.request
 import json
 import asyncio
 
-order = ['Level', 'Rank', 'Games', 'Win-Rate', 'K/D-Ratio']
+order = ['Level', 'Prestige' ,'Rank', 'Games', 'Win-Rate', 'K/D-Ratio']
 
 players = []
 
 def statsToString(stats):
-	statStr = '**' + stats['BattleTag'] + '**' + '\n'
+	sstats = {k: str(stats[k]) for k in stats}
+	statStr = '**' + sstats['BattleTag'] + '**' + '\n'
 	for name in order:
-		statStr += '***' + name + ':*** ' + stats[name] + ' **|** '
+		statStr += '***' + name + ':*** ' + sstats[name] + ' **|** '
 	statStr = statStr[:-6]
 	return statStr
 
@@ -18,12 +19,13 @@ def processStats(stats):
 	avgStats = stats['average_stats']
 	gameStats = stats['game_stats']
 	newStats = {}
-	newStats['Rank'] = str(overallStats['comprank'])
-	newStats['Games'] = str(overallStats['games'])
-	newStats['Level'] = str(overallStats['prestige']) + '-' +str(overallStats['level'])
+	newStats['Rank'] = overallStats['comprank']
+	newStats['Games'] = overallStats['games']
+	newStats['Level'] = overallStats['level']
+	newStats['Prestige'] = overallStats['prestige']
 	winRate = round(overallStats['wins'] / (overallStats['wins'] + overallStats['losses']), 3) * 100
-	newStats['Win-Rate'] = str(round(winRate, 1)) + '%'
-	newStats['K/D-Ratio'] = str(gameStats['kpd'])
+	newStats['Win-Rate'] = round(winRate, 1)
+	newStats['K/D-Ratio'] = gameStats['kpd']
 	newStats['BattleTag'] = stats['battletag']
 	statsToString(newStats)
 	return newStats
@@ -53,10 +55,32 @@ async def addPlayer(battleTag):
 	print(players)
 	return True
 
-async def getLeaderboard():
-	statStrs = [statsToString(s) for s in players]
+async def getLeaderboard(order):
+	sortedPlayers = sorted(players, key=lambda k: k[order], reverse=True)
+	statStrs = [statsToString(s) for s in sortedPlayers]
 	for i in range(0, len(statStrs)):
 		statStrs[i] = '**' + str(i + 1) +'.** ' + statStrs[i]
-	print(statStrs)
 	return '\n\n'.join(statStrs)
+
+async def addTestPlayers():
+	await addPlayer('BadMannered-11804')
+	await addPlayer('Kirazuto-1500')
+	await addPlayer('Lucario-1888')
+	await addPlayer('Lunar-1153')
+	await addPlayer('Oblivion-1572')
+	await addPlayer('Demetri-1640')
+	await addPlayer('NerdyPanda-1923')
+	await addPlayer('Michelangelo-11865')
+	await addPlayer('Captain-12480')
+	await addPlayer('Spyceh-1223')
+
+
+
+
+
+
+
+
+
+
 

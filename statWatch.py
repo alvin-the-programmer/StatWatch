@@ -34,7 +34,13 @@ async def on_message(message):
         else:
             await client.edit_message(tmp, 'Failed to add ' + args[1] + ' to leaderboard.')
     elif message.content.startswith('!swleaderboard'):
-        response = await stats.getLeaderboard()
+        args = message.content.split(' ')
+        response = await stats.getLeaderboard(args[1])
         await client.send_message(message.channel, response)
+    elif message.content.startswith('!swfilltest'):
+        tmp = await client.send_message(message.channel, 'filling leaderboard with test scrubs...')
+        await stats.addTestPlayers()
+        await client.edit_message(tmp, 'leaderboard filled.')
+
 
 client.run('azablan.dev@gmail.com', myPwd.password())
