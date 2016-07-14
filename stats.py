@@ -2,15 +2,15 @@ import urllib.request
 import json
 import asyncio
 
-order = ['Level', 'Rank', 'Games', 'Win Rate', 'K/D Ratio']
+order = ['Level', 'Rank', 'Games', 'Win-Rate', 'K/D-Ratio']
 
 players = []
 
 def statsToString(stats):
 	statStr = '**' + stats['BattleTag'] + '**' + '\n'
 	for name in order:
-		statStr += '***' + name + ':*** ' + stats[name] + ', '
-	statStr = statStr[:-2]
+		statStr += '***' + name + ':*** ' + stats[name] + ' **|** '
+	statStr = statStr[:-6]
 	return statStr
 
 def processStats(stats):
@@ -20,10 +20,10 @@ def processStats(stats):
 	newStats = {}
 	newStats['Rank'] = str(overallStats['comprank'])
 	newStats['Games'] = str(overallStats['games'])
-	newStats['Level'] = str(overallStats['prestige']) + ' - ' +str(overallStats['level'])
+	newStats['Level'] = str(overallStats['prestige']) + '-' +str(overallStats['level'])
 	winRate = round(overallStats['wins'] / (overallStats['wins'] + overallStats['losses']), 3) * 100
-	newStats['Win Rate'] = str(round(winRate, 1)) + '%'
-	newStats['K/D Ratio'] = str(gameStats['kpd'])
+	newStats['Win-Rate'] = str(round(winRate, 1)) + '%'
+	newStats['K/D-Ratio'] = str(gameStats['kpd'])
 	newStats['BattleTag'] = stats['battletag']
 	statsToString(newStats)
 	return newStats
@@ -55,6 +55,8 @@ async def addPlayer(battleTag):
 
 async def getLeaderboard():
 	statStrs = [statsToString(s) for s in players]
+	for i in range(0, len(statStrs)):
+		statStrs[i] = '**' + str(i + 1) +'.** ' + statStrs[i]
 	print(statStrs)
 	return '\n\n'.join(statStrs)
 
