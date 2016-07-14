@@ -67,7 +67,6 @@ async def getLeaderboard(order):
 async def addTestPlayers():
 	await addPlayer('BadMannered-11804')
 	await addPlayer('Kirazuto-1500')
-	await addPlayer('Lucario-1888')
 	await addPlayer('Lunar-1153')
 	await addPlayer('Oblivion-1572')
 	await addPlayer('Michelangelo-11865')
@@ -75,6 +74,8 @@ async def addTestPlayers():
 	# await addPlayer('NerdyPanda-1923')
 	# await addPlayer('Captain-12480')
 	# await addPlayer('Spyceh-1223')
+	# await addPlayer('Lucario-1888')
+	# await addPlayer('Oblivion-1572')
 
 
 
