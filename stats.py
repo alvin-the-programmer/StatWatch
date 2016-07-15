@@ -8,14 +8,14 @@ order = ['Games', 'Win-Rate', 'K/D-Ratio']
 tracked = {
 	'BadMannered-11804',
 	'Kirazuto-1500',
-	'Lunar-1153',
-	'Oblivion-1572',
-	'NerdyPanda-1923',
+	# 'Lunar-1153',
+	# 'Oblivion-1572',
+	# 'NerdyPanda-1923',
 	# 'Captain-12480',
 	# 'Spyceh-1223',
 	# 'Lucario-1888',
 	# 'Michelangelo-11865',
-	'Ananas-11617'
+	# 'Ananas-11617'
 }
 
 players = []
@@ -82,19 +82,24 @@ async def addPlayer(battleTag):
 
 async def getSortedLadder(mode, stat):
 	sortedPlayers = sorted(players, key=lambda k: k[mode][stat], reverse=True)
-	playerStr = []
+	playerStrList = []
 	for num, s in enumerate(sortedPlayers):
-		name = '**' + str(num + 1) + '.** ' + '__**' + s['quick']['BattleTag'] + '**__  '
-		rank = 'Rank ' + str(s['quick']['Rank'])
-		prestige = 'Prestige ' + str(s['quick']['Prestige'])
-		level = 'Level ' + str(s['quick']['Level'])
-		header = name + prestige + ' **|** ' + level + ' **|** ' + rank
-		quick = '    **Quick:**  ' + statsToString(s['quick'])
-		comp = '    **Comp:**  ' + statsToString(s['comp'])
-		playerStr.append(header + '\n\n' + quick + '\n' + comp)
-	response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStr)
+		playerStr = await playerString(num + 1, s)
+		playerStrList.append(playerStr)
+	response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStrList)
 	print(len(response))
 	return response
+
+async def playerString(num, stats):
+	name = '**' + str(num) + '.** ' + '__**' + stats['quick']['BattleTag'] + '**__  '
+	rank = 'Rank ' + str(stats['quick']['Rank'])
+	prestige = 'Prestige ' + str(stats['quick']['Prestige'])
+	level = 'Level ' + str(stats['quick']['Level'])
+	header = name + prestige + ' **|** ' + level + ' **|** ' + rank
+	quick = '       **Quick:**  ' + statsToString(stats['quick'])
+	comp = '       **Comp:**  ' + statsToString(stats['comp'])
+	playerStr = header + '\n' + quick + '\n' + comp
+	return playerStr
 
 async def trackPlayer(battleTag):
 	tracked.add(battleTag)
