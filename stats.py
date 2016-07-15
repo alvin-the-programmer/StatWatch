@@ -3,7 +3,7 @@ import json
 import asyncio
 import aiohttp
 
-order = ['Level', 'Prestige' ,'Rank', 'Games', 'Win-Rate', 'K/D-Ratio']
+order = ['Games', 'Win-Rate', 'K/D-Ratio']
 
 tracked = {
 	'BadMannered-11804',
@@ -11,17 +11,18 @@ tracked = {
 	'Lunar-1153',
 	'Oblivion-1572',
 	'NerdyPanda-1923',
-	'Captain-12480',
-	'Spyceh-1223',
-	'Lucario-1888',
-	'Michelangelo-11865'
+	# 'Captain-12480',
+	# 'Spyceh-1223',
+	# 'Lucario-1888',
+	# 'Michelangelo-11865',
+	'Ananas-11617'
 }
 
 players = []
 
 def statsToString(stats):
 	sstats = {k: str(stats[k]) for k in stats}
-	statStr = '**' + sstats['BattleTag'] + '**' + '\n'
+	statStr = ''
 	for name in order:
 		statStr += '***' + name + ':*** ' + sstats[name] + ' **|** '
 	statStr = statStr[:-6]
@@ -46,9 +47,18 @@ def processStats(stats):
 	statsToString(newStats)
 	return newStats
 
-async def apiRequest(battleTag):
-	print('requesting ' + battleTag)
+async def apiRequestQuick(battleTag):
+	print('requesting quick-play stats for: ' + battleTag)
 	async with aiohttp.get('https://owapi.net/api/v2/u/' + battleTag + '/stats/general') as r:
+		if r.status == 200:
+			js = await r.json()
+			return js
+		else:
+			return None
+
+async def apiRequestComp(battleTag):
+	print('requesting competitive-play stats for: ' + battleTag)
+	async with aiohttp.get('https://owapi.net/api/v2/u/' + battleTag + '/stats/competitive') as r:
 		if r.status == 200:
 			js = await r.json()
 			return js
@@ -61,19 +71,29 @@ async def getStats(battleTag):
 	return statsToString(playerStats)
 
 async def addPlayer(battleTag):
-	playerStats = await apiRequest(battleTag)
-	if playerStats is None:
+	quickStats = await apiRequestQuick(battleTag)
+	compStats = await apiRequestComp(battleTag)
+	if quickStats is None or compStats is None:
 		return False
-	playerStats = processStats(playerStats)
-	players.append(playerStats)
+	quickStats = processStats(quickStats)
+	compStats = processStats(compStats)
+	players.append({'battleTag': battleTag, 'quick': quickStats, 'comp': compStats})
 	return True
 
-async def getLeaderboard(order):
-	sortedPlayers = sorted(players, key=lambda k: k[order], reverse=True)
-	statStrs = [statsToString(s) for s in sortedPlayers]
-	for i in range(0, len(statStrs)):
-		statStrs[i] = '**' + str(i + 1) +'.** ' + statStrs[i]
-	response = '*Ladder Ordered by '+ order + ':*\n\n' + '\n\n'.join(statStrs)
+async def getSortedLadder(mode, stat):
+	sortedPlayers = sorted(players, key=lambda k: k[mode][stat], reverse=True)
+	playerStr = []
+	for num, s in enumerate(sortedPlayers):
+		name = '**' + str(num + 1) + '.** ' + '__**' + s['quick']['BattleTag'] + '**__  '
+		rank = 'Rank ' + str(s['quick']['Rank'])
+		prestige = 'Prestige ' + str(s['quick']['Prestige'])
+		level = 'Level ' + str(s['quick']['Level'])
+		header = name + prestige + ' **|** ' + level + ' **|** ' + rank
+		quick = '    **Quick:**  ' + statsToString(s['quick'])
+		comp = '    **Comp:**  ' + statsToString(s['comp'])
+		playerStr.append(header + '\n\n' + quick + '\n' + comp)
+	response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStr)
+	print(len(response))
 	return response
 
 async def trackPlayer(battleTag):
@@ -93,6 +113,7 @@ async def updateLoop():
 		print('updating')
 		await updateProfiles()
 		print('update done')
+		print(players)
 		await asyncio.sleep(180)
 
 

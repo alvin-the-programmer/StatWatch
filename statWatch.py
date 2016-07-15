@@ -40,20 +40,22 @@ async def swtrack(message, args):
     await stats.trackPlayer(args[1])
 
 async def swladder(message, args):
-    if len(args) > 2:
-        response = 'to list ladder: \'!swladder <Optional Parameter>\', for example: \'!swadd\' or \'!swadd rank\''
-        await client.send_message(message.channel, response)
-        return
-    if len(args) == 1:
-        arg = 'Rank'
-    else:
-        arg = checkLadderArg(args[1])
-    if arg:
-        response = await stats.getLeaderboard(arg)
-        await client.send_message(message.channel, response)
-    else:
-        await client.send_message(message.channel, 'Invalid ladder parameter, use one of the following: ' )
-        await client.send_message(message.channel, params)
+    response = await stats.getSortedLadder(args[1], args[2])
+    await client.send_message(message.channel, response)
+    # if len(args) > 2:
+    #     response = 'to list ladder: \'!swladder <Optional Parameter>\', for example: \'!swadd\' or \'!swadd rank\''
+    #     await client.send_message(message.channel, response)
+    #     return
+    # if len(args) == 1:
+    #     arg = 'Rank'
+    # else:
+    #     arg = checkLadderArg(args[1])
+    # if arg:
+    #     response = await stats.getSortedLadder(arg[1], arg[2])
+    #     await client.send_message(message.channel, response)
+    # else:
+    #     await client.send_message(message.channel, 'Invalid ladder parameter, use one of the following: ' )
+    #     await client.send_message(message.channel, params)
 
 @client.event
 async def on_ready():
@@ -76,7 +78,7 @@ async def on_message(message):
     elif message.content.startswith('!swloop'):
         await stats.updateLoop()
 
-client.run(botLogin.email(), botLogin.password())
+client.run('azablan.dev@gmail.com', 'Philip123')
 
 
 
