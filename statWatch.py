@@ -1,7 +1,7 @@
 import discord
 import asyncio
 import stats
-import myPwd
+import botLogin
 
 client = discord.Client()
 
@@ -76,7 +76,7 @@ async def on_message(message):
     elif message.content.startswith('!swloop'):
         await stats.updateLoop()
 
-client.run('azablan.dev@gmail.com', myPwd.password())
+client.run(botLogin.email(), botLogin.password())
 
 
 
