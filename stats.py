@@ -13,7 +13,8 @@ tracked = {
 	'NerdyPanda-1923',
 	'Captain-12480',
 	'Spyceh-1223',
-	'Lucario-1888'
+	'Lucario-1888',
+	'Michelangelo-11865'
 }
 
 players = []
@@ -74,29 +75,23 @@ async def getLeaderboard(order):
 		statStrs[i] = '**' + str(i + 1) +'.** ' + statStrs[i]
 	return '\n\n'.join(statStrs)
 
-# async def addTestPlayers():
-# 	global players
-# 	players = []
-# 	await addPlayer('BadMannered-11804')
-# 	await addPlayer('Kirazuto-1500')
-# 	await addPlayer('Lunar-1153')
-# 	await addPlayer('Oblivion-1572')
-# 	# await addPlayer('Michelangelo-11865')
-# 	# await addPlayer('Demetri-1640')
-# 	# await addPlayer('Lucario-1888')
-# 	# await addPlayer('NerdyPanda-1923')
-# 	# await addPlayer('Captain-12480')
-# 	# await addPlayer('Spyceh-1223')
-
 async def trackPlayer(battleTag):
 	tracked.add(battleTag)
-	print(tracked)
 
 async def updateProfiles():
 	global players
 	players = []
 	for player in tracked:
 		await addPlayer(player)
+
+async def test():
+	print('test!')
+
+async def updateLoop():
+	while True:
+		print('updating')
+		await updateProfiles()
+		await asyncio.sleep(180)
 
 
 

@@ -54,12 +54,7 @@ async def swladder(message, args):
     else:
         await client.send_message(message.channel, 'Invalid ladder parameter, use one of the following: ' )
         await client.send_message(message.channel, params)
-
-# async def swfill(message, args):
-#     tmp = await client.send_message(message.channel, '*filling ladder with test scrubs...*')
-#     await stats.addTestPlayers()
-#     await client.edit_message(tmp, 'ladder filled.')
-
+        
 @client.event
 async def on_ready():
     print('Bot logged in as ' + client.user.name + ' ' + client.user.id + '.')
@@ -73,12 +68,12 @@ async def on_message(message):
         await swadd(message, args)
     elif message.content.startswith('!swladder'):
         await swladder(message, args)
-    # elif message.content.startswith('!swfill'):
-    #     await swfill(message, args)
     elif message.content.startswith('!swtrack'):
         await swtrack(message, args)
     elif message.content.startswith('!swupdate'):
         await stats.updateProfiles()
+    elif message.content.startswith('!swloop'):
+        await stats.updateLoop()
 
 client.run('azablan.dev@gmail.com', myPwd.password())
 
