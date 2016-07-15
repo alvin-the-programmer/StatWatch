@@ -47,6 +47,8 @@ async def swtrack(message, args):
     await stats.trackPlayer(args[1])
 
 async def swladder(message, args):
+    arg1 = False
+    arg2 = False
     if len(args) == 1:
         arg1 = 'quick'
         arg2 = 'Win-Rate'
@@ -56,7 +58,7 @@ async def swladder(message, args):
     if arg1 and arg2:
         response = await stats.getSortedLadder(arg1, arg2)
     else:
-        response = 'to list ladder list: \'!swladder <mode> <stat>\', for example: \'!swladder\' or \'!swladder quick k/d-ratio\''
+        response = 'to list ladder: \'!swladder <mode> <stat>\', for example: \'!swladder\' or \'!swladder quick k/d-ratio\''
     while len(response) > 1400:
         i = response.find('\n\n', 1400)
         await client.send_message(message.channel, response[:i])
