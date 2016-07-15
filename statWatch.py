@@ -7,12 +7,19 @@ client = discord.Client()
 
 params = ['Level', 'Prestige' ,'Rank', 'Games', 'Win-Rate', 'K/D-Ratio']
 
-def checkLadderArg(myArg):
+def checkStatArg(myArg):
     myArg = myArg.lower()
     argDict = {k.lower(): k for k in params}
     try:
         return argDict[myArg]
     except KeyError:
+        return False
+
+def checkModeArg(myArg):
+    myArg = myArg.lower()
+    if myArg == 'quick' or myArg == 'comp':
+        return myArg
+    else:
         return False
 
 async def swget(message, args):
@@ -40,22 +47,17 @@ async def swtrack(message, args):
     await stats.trackPlayer(args[1])
 
 async def swladder(message, args):
-    response = await stats.getSortedLadder(args[1], args[2])
+    if len(args) == 1:
+        arg1 = 'quick'
+        arg2 = 'Win-Rate'
+    elif len(args) == 3:
+        arg1 = checkModeArg(args[1])
+        arg2 = checkStatArg(args[2])
+    if arg1 and arg2:
+        response = await stats.getSortedLadder(arg1, arg2)
+    else:
+        response = 'to list ladder list: \'!swladder <mode> <stat>\', for example: \'!swladder\' or \'!swladder quick k/d-ratio\''
     await client.send_message(message.channel, response)
-    # if len(args) > 2:
-    #     response = 'to list ladder: \'!swladder <Optional Parameter>\', for example: \'!swadd\' or \'!swadd rank\''
-    #     await client.send_message(message.channel, response)
-    #     return
-    # if len(args) == 1:
-    #     arg = 'Rank'
-    # else:
-    #     arg = checkLadderArg(args[1])
-    # if arg:
-    #     response = await stats.getSortedLadder(arg[1], arg[2])
-    #     await client.send_message(message.channel, response)
-    # else:
-    #     await client.send_message(message.channel, 'Invalid ladder parameter, use one of the following: ' )
-    #     await client.send_message(message.channel, params)
 
 @client.event
 async def on_ready():
