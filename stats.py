@@ -6,16 +6,16 @@ import aiohttp
 order = ['Games', 'Win-Rate', 'K/D-Ratio']
 
 tracked = {
+	# 'Spyceh-1223',
 	'BadMannered-11804',
 	'Kirazuto-1500',
-	# 'Lunar-1153',
-	# 'Oblivion-1572',
-	# 'NerdyPanda-1923',
-	# 'Captain-12480',
-	# 'Spyceh-1223',
-	# 'Lucario-1888',
-	# 'Michelangelo-11865',
-	# 'Ananas-11617'
+	'Lunar-1153',
+	'Oblivion-1572',
+	'NerdyPanda-1923',
+	'Captain-12480',
+	'Lucario-1888',
+	'Michelangelo-11865',
+	'Ananas-11617'
 }
 
 players = []
@@ -54,6 +54,7 @@ async def apiRequestQuick(battleTag):
 			js = await r.json()
 			return js
 		else:
+			print(battleTag + ' quick request failed')
 			return None
 
 async def apiRequestComp(battleTag):
@@ -63,6 +64,7 @@ async def apiRequestComp(battleTag):
 			js = await r.json()
 			return js
 		else:
+			print(battleTag + ' comp request failed')
 			return None
 
 async def getStats(battleTag):
@@ -87,7 +89,6 @@ async def getSortedLadder(mode, stat):
 		playerStr = await playerString(num + 1, s)
 		playerStrList.append(playerStr)
 	response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStrList)
-	print(len(response))
 	return response
 
 async def playerString(num, stats):
@@ -118,8 +119,9 @@ async def updateLoop():
 		print('updating')
 		await updateProfiles()
 		print('update done')
-		print(players)
-		await asyncio.sleep(180)
+		for p in players:
+			print(p['quick']['BattleTag'])
+		await asyncio.sleep(1200)
 
 
 
