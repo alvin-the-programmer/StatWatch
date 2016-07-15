@@ -1,8 +1,20 @@
 import urllib.request
 import json
 import asyncio
+import aiohttp
 
 order = ['Level', 'Prestige' ,'Rank', 'Games', 'Win-Rate', 'K/D-Ratio']
+
+tracked = {
+	'BadMannered-11804',
+	'Kirazuto-1500',
+	'Lunar-1153',
+	'Oblivion-1572',
+	'NerdyPanda-1923',
+	'Captain-12480',
+	'Spyceh-1223',
+	'Lucario-1888'
+}
 
 players = []
 
@@ -35,14 +47,12 @@ def processStats(stats):
 
 async def apiRequest(battleTag):
 	print('requesting ' + battleTag)
-	url = 'https://owapi.net/api/v2/u/' + battleTag + '/stats/general'
-	try:
-		data = urllib.request.urlopen(url).read()
-		data = data.decode('utf-8')
-		return json.loads(data)
-	except urllib.error.HTTPError:
-		print('request failed')
-		return None
+	async with aiohttp.get('https://owapi.net/api/v2/u/' + battleTag + '/stats/general') as r:
+		if r.status == 200:
+			js = await r.json()
+			return js
+		else:
+			return None
 
 async def getStats(battleTag):
 	playerStats = await apiRequest(battleTag)
@@ -64,20 +74,29 @@ async def getLeaderboard(order):
 		statStrs[i] = '**' + str(i + 1) +'.** ' + statStrs[i]
 	return '\n\n'.join(statStrs)
 
-async def addTestPlayers():
-	await addPlayer('BadMannered-11804')
-	await addPlayer('Kirazuto-1500')
-	await addPlayer('Lunar-1153')
-	await addPlayer('Oblivion-1572')
-	await addPlayer('Michelangelo-11865')
-	await addPlayer('Demetri-1640')
-	# await addPlayer('NerdyPanda-1923')
-	# await addPlayer('Captain-12480')
-	# await addPlayer('Spyceh-1223')
-	# await addPlayer('Lucario-1888')
-	# await addPlayer('Oblivion-1572')
+# async def addTestPlayers():
+# 	global players
+# 	players = []
+# 	await addPlayer('BadMannered-11804')
+# 	await addPlayer('Kirazuto-1500')
+# 	await addPlayer('Lunar-1153')
+# 	await addPlayer('Oblivion-1572')
+# 	# await addPlayer('Michelangelo-11865')
+# 	# await addPlayer('Demetri-1640')
+# 	# await addPlayer('Lucario-1888')
+# 	# await addPlayer('NerdyPanda-1923')
+# 	# await addPlayer('Captain-12480')
+# 	# await addPlayer('Spyceh-1223')
 
+async def trackPlayer(battleTag):
+	tracked.add(battleTag)
+	print(tracked)
 
+async def updateProfiles():
+	global players
+	players = []
+	for player in tracked:
+		await addPlayer(player)
 
 
 

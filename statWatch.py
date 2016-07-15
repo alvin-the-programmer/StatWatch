@@ -35,6 +35,10 @@ async def swadd(message, args):
     else:
         await client.edit_message(tmp, 'Failed to add ' + args[1] + ' to ladder.')
 
+async def swtrack(message, args):
+    tmp = await client.send_message(message.channel, '*Tracking' + args[1] + '\'s stats...*')
+    await stats.trackPlayer(args[1])
+
 async def swladder(message, args):
     if len(args) > 2:
         response = 'to list ladder: \'!swladder <Optional Parameter>\', for example: \'!swadd\' or \'!swadd rank\''
@@ -51,10 +55,10 @@ async def swladder(message, args):
         await client.send_message(message.channel, 'Invalid ladder parameter, use one of the following: ' )
         await client.send_message(message.channel, params)
 
-async def swfill(message, args):
-    tmp = await client.send_message(message.channel, '*filling ladder with test scrubs...*')
-    await stats.addTestPlayers()
-    await client.edit_message(tmp, 'ladder filled.')
+# async def swfill(message, args):
+#     tmp = await client.send_message(message.channel, '*filling ladder with test scrubs...*')
+#     await stats.addTestPlayers()
+#     await client.edit_message(tmp, 'ladder filled.')
 
 @client.event
 async def on_ready():
@@ -69,8 +73,12 @@ async def on_message(message):
         await swadd(message, args)
     elif message.content.startswith('!swladder'):
         await swladder(message, args)
-    elif message.content.startswith('!swfill'):
-        await swfill(message, args)
+    # elif message.content.startswith('!swfill'):
+    #     await swfill(message, args)
+    elif message.content.startswith('!swtrack'):
+        await swtrack(message, args)
+    elif message.content.startswith('!swupdate'):
+        await stats.updateProfiles()
 
 client.run('azablan.dev@gmail.com', myPwd.password())
 
