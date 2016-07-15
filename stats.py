@@ -73,7 +73,8 @@ async def getLeaderboard(order):
 	statStrs = [statsToString(s) for s in sortedPlayers]
 	for i in range(0, len(statStrs)):
 		statStrs[i] = '**' + str(i + 1) +'.** ' + statStrs[i]
-	return '\n\n'.join(statStrs)
+	response = '*Ladder Ordered by '+ order + ':*\n\n' + '\n\n'.join(statStrs)
+	return response
 
 async def trackPlayer(battleTag):
 	tracked.add(battleTag)
@@ -91,6 +92,7 @@ async def updateLoop():
 	while True:
 		print('updating')
 		await updateProfiles()
+		print('update done')
 		await asyncio.sleep(180)
 
 

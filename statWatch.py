@@ -54,7 +54,7 @@ async def swladder(message, args):
     else:
         await client.send_message(message.channel, 'Invalid ladder parameter, use one of the following: ' )
         await client.send_message(message.channel, params)
-        
+
 @client.event
 async def on_ready():
     print('Bot logged in as ' + client.user.name + ' ' + client.user.id + '.')
@@ -70,6 +70,7 @@ async def on_message(message):
         await swladder(message, args)
     elif message.content.startswith('!swtrack'):
         await swtrack(message, args)
+    # elif message.content.startswith('!untrack'):
     elif message.content.startswith('!swupdate'):
         await stats.updateProfiles()
     elif message.content.startswith('!swloop'):
