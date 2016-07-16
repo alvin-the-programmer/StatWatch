@@ -45,32 +45,39 @@ def processStats(stats):
 	statsToString(newStats)
 	return newStats
 
-async def getStats(battleTag):
-	playerStats = await apiRequest(battleTag)
-	playerStats = processStats(playerStats)
-	return statsToString(playerStats)
+async def swget(battleTag):
+	playerStats = await getPlayerStats(battleTag)
+	return await playerString(playerStats)
 
-async def addPlayer(battleTag):
-	quickStats = await owapi.request(battleTag, 'quick')
-	compStats = await owapi.request(battleTag, 'comp')
+async def getPlayerStats(battleTag):
+	quickStats = await owapi.request(battleTag, 'general')
+	compStats = await owapi.request(battleTag, 'competitive')
 	if quickStats is None or compStats is None:
-		return False
+		return None
 	quickStats = processStats(quickStats)
 	compStats = processStats(compStats)
-	players.append({'battleTag': battleTag, 'quick': quickStats, 'comp': compStats})
+	return {'battleTag': battleTag, 'quick': quickStats, 'comp': compStats}
+
+async def addPlayer(battleTag):
+	playerStats = await getPlayerStats(battleTag)
+	if playerStats is None:
+		return False
+	players.append(playerStats)
 	return True
 
 async def getSortedLadder(mode, stat):
 	sortedPlayers = sorted(players, key=lambda k: k[mode][stat], reverse=True)
 	playerStrList = []
 	for num, s in enumerate(sortedPlayers):
-		playerStr = await playerString(num + 1, s)
+		playerStr = await playerString(s, num + 1)
 		playerStrList.append(playerStr)
 	response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStrList)
 	return response
 
-async def playerString(num, stats):
-	name = '**' + str(num) + '.** ' + '__**' + stats['quick']['BattleTag'] + '**__  '
+async def playerString(stats, num=None):
+	name = '__**' + stats['quick']['BattleTag'] + '**__  '
+	if num is not None: 
+		name = '**' + str(num) + '.** ' + name
 	rank = 'Rank ' + str(stats['quick']['Rank'])
 	prestige = 'Prestige ' + str(stats['quick']['Prestige'])
 	level = 'Level ' + str(stats['quick']['Level'])

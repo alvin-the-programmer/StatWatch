@@ -28,7 +28,7 @@ async def swget(message, args):
         await client.send_message(message.channel, response)
         return
     tmp = await client.send_message(message.channel, '*Retrieving ' + args[1] + '\'s stats...*')
-    response = await stats.getStats(args[1])
+    response = await stats.swget(args[1])
     await client.edit_message(tmp, response)
 
 async def swadd(message, args):
