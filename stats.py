@@ -1,6 +1,5 @@
-import urllib.request
 import asyncio
-import aiohttp
+import owapi
 
 order = ['Games', 'Win-Rate', 'K/D-Ratio']
 
@@ -13,7 +12,8 @@ tracked = {
 	'Captain-12480',
 	'Lucario-1888',
 	'Michelangelo-11865',
-	'Ananas-11617'
+	'Ananas-11617',
+	'Spyceh-1223'
 }
 
 players = []
@@ -45,34 +45,14 @@ def processStats(stats):
 	statsToString(newStats)
 	return newStats
 
-async def apiRequestQuick(battleTag):
-	print('requesting quick-play stats for: ' + battleTag)
-	async with aiohttp.get('https://owapi.net/api/v2/u/' + battleTag + '/stats/general') as r:
-		if r.status == 200:
-			js = await r.json()
-			return js
-		else:
-			print(battleTag + ' quick request failed')
-			return None
-
-async def apiRequestComp(battleTag):
-	print('requesting competitive-play stats for: ' + battleTag)
-	async with aiohttp.get('https://owapi.net/api/v2/u/' + battleTag + '/stats/competitive') as r:
-		if r.status == 200:
-			js = await r.json()
-			return js
-		else:
-			print(battleTag + ' comp request failed')
-			return None
-
 async def getStats(battleTag):
 	playerStats = await apiRequest(battleTag)
 	playerStats = processStats(playerStats)
 	return statsToString(playerStats)
 
 async def addPlayer(battleTag):
-	quickStats = await apiRequestQuick(battleTag)
-	compStats = await apiRequestComp(battleTag)
+	quickStats = await owapi.request(battleTag, 'quick')
+	compStats = await owapi.request(battleTag, 'comp')
 	if quickStats is None or compStats is None:
 		return False
 	quickStats = processStats(quickStats)
