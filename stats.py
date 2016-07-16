@@ -6,7 +6,7 @@ import aiohttp
 order = ['Games', 'Win-Rate', 'K/D-Ratio']
 
 tracked = {
-	# 'Spyceh-1223',
+	'Spyceh-1223',
 	'BadMannered-11804',
 	'Kirazuto-1500',
 	'Lunar-1153',
