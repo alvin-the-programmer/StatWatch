@@ -1,5 +1,6 @@
 import asyncio
 import owapi
+import datetime
 
 order = ['Games', 'Win-Rate', 'K/D-Ratio']
 
@@ -17,14 +18,6 @@ tracked = {
 }
 
 players = []
-
-def statsToString(stats):
-	sstats = {k: str(stats[k]) for k in stats}
-	statStr = ''
-	for name in order:
-		statStr += '***' + name + ':*** ' + sstats[name] + ' **|** '
-	statStr = statStr[:-6]
-	return statStr
 
 def processStats(stats):
 	overallStats = stats['overall_stats']
@@ -45,9 +38,13 @@ def processStats(stats):
 	statsToString(newStats)
 	return newStats
 
-async def swget(battleTag):
-	playerStats = await getPlayerStats(battleTag)
-	return await playerString(playerStats)
+def statsToString(stats):
+	sstats = {k: str(stats[k]) for k in stats}
+	statStr = ''
+	for name in order:
+		statStr += '***' + name + ':*** ' + sstats[name] + ' **|** '
+	statStr = statStr[:-6]
+	return statStr
 
 async def getPlayerStats(battleTag):
 	quickStats = await owapi.request(battleTag, 'general')
@@ -87,32 +84,29 @@ async def playerString(stats, num=None):
 	playerStr = header + '\n' + quick + '\n' + comp
 	return playerStr
 
-async def trackPlayer(battleTag):
-	tracked.add(battleTag)
-
 async def updateProfiles():
 	global players
 	players = []
 	for player in tracked:
 		await addPlayer(player)
 
-async def test():
-	print('test!')
-
 async def updateLoop():
 	while True:
-		print('updating')
+		print('***updating ' + str(datetime.datetime.now()))
 		await updateProfiles()
-		print('update done')
-		for p in players:
-			print(p['quick']['BattleTag'])
-		await asyncio.sleep(1200)
+		print('***update done')
+		await asyncio.sleep(1800)
 
+async def swget(battleTag):
+	playerStats = await getPlayerStats(battleTag)
+	return await playerString(playerStats)
 
+async def swtrack(battleTag):
+	tracked.add(battleTag)
 
-
-
-
-
-
-
+async def swuntrack(battleTag):
+	if battleTag in tracked:
+		tracked.remove(battleTag)
+		return True
+	else:
+		return False

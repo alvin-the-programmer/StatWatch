@@ -81,6 +81,7 @@ async def on_message(message):
     elif message.content.startswith('!swtrack'):
         await swtrack(message, args)
     # elif message.content.startswith('!untrack'):
+
     elif message.content.startswith('!swupdate'):
         await stats.updateProfiles()
     elif message.content.startswith('!swloop'):
