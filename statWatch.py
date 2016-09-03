@@ -59,11 +59,15 @@ async def swladder(message, args):
         response = await stats.getSortedLadder(arg1, arg2)
     else:
         response = 'to list ladder: `!swladder <mode> <stat>`, for example: `!swladder` or `!swladder quick k/d-ratio`'
-    while len(response) > 1400:
-        i = response.find('\n\n', 1400)
-        await client.send_message(message.channel, response[:i])
-        response = response[i + 1:]
-    await client.send_message(message.channel, response)
+    for player in response:
+        await client.send_message(message.channel, player)
+    # while response:
+    #     i = response.find('\n\n')
+    #     print(response[:i])
+    #     # await client.send_message(message.channel, response[:i])
+    #     response = response[i + 1:]
+
+    # await client.send_message(message.channel, response)
 
 @client.event
 async def on_ready():
@@ -88,7 +92,3 @@ async def on_message(message):
         await stats.updateLoop()
 
 client.run(login.email, login.password)
-
-
-
-

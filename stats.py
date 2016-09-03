@@ -8,13 +8,7 @@ tracked = {
 	'BadMannered-11804',
 	'Kirazuto-1500',
 	'Lunar-1153',
-	'Oblivion-1572',
-	'NerdyPanda-1923',
-	'Captain-12480',
-	'Lucario-1888',
-	'Michelangelo-11865',
-	'Ananas-11617',
-	'Spyceh-1223'
+	'Oblivion-1572'
 }
 
 players = []
@@ -29,7 +23,7 @@ def processStats(stats):
 	else:
 		newStats['Rank'] = overallStats['comprank']
 	newStats['Games'] = overallStats['games']
-	newStats['Level'] = overallStats['level'] 
+	newStats['Level'] = overallStats['level']
 	newStats['Prestige'] = overallStats['prestige']
 	winRate = round(overallStats['wins'] / (overallStats['wins'] + overallStats['losses']), 3) * 100
 	newStats['Win-Rate'] = round(winRate, 1)
@@ -67,13 +61,13 @@ async def getSortedLadder(mode, stat):
 	playerStrList = []
 	for num, s in enumerate(sortedPlayers):
 		playerStr = await playerString(s, num + 1)
-		playerStrList.append(playerStr)
-	response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStrList)
-	return response
+		playerStrList.append(playerStr + '\n')
+	# response = '*Ladder Ordered by '+ mode + ' ' + stat + ':*\n\n' + '\n\n'.join(playerStrList)
+	return playerStrList
 
 async def playerString(stats, num=None):
 	name = '__**' + stats['quick']['BattleTag'] + '**__  '
-	if num is not None: 
+	if num is not None:
 		name = '**' + str(num) + '.** ' + name
 	rank = 'Rank ' + str(stats['quick']['Rank'])
 	prestige = 'Prestige ' + str(stats['quick']['Prestige'])
